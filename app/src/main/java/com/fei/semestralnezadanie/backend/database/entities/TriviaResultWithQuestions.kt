@@ -3,7 +3,7 @@ package com.fei.semestralnezadanie.backend.database.entities
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class TriviaToQuestionsRelation(
+data class TriviaResultWithQuestions(
     @Embedded
     val triviaResult: TriviaResult,
 

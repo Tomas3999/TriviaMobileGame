@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.fei.semestralnezadanie.backend.database.converters.Converters
-import com.fei.semestralnezadanie.backend.database.models.TriviaDao
+import com.fei.semestralnezadanie.backend.database.dao.TriviaDao
 import com.fei.semestralnezadanie.backend.database.entities.QuestionAnswer
 import com.fei.semestralnezadanie.backend.database.entities.TriviaResult
 

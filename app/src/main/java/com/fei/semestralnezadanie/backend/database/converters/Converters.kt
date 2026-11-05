@@ -4,7 +4,7 @@ import androidx.room.TypeConverter
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class Converters {
+object Converters {
     @TypeConverter
     fun fromStringList(value: List<String>): String {
         return Json.encodeToString(value)
@@ -14,8 +14,7 @@ class Converters {
     fun toStringList(value: String): List<String> {
         return try {
             Json.decodeFromString(value)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             emptyList()
         }
     }

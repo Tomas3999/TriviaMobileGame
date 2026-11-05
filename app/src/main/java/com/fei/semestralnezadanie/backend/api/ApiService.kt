@@ -16,8 +16,8 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(Config.Api.BASE_URL)
     .build()
 
-object Api {
-    val retrofitService: Controller by lazy {
-        retrofit.create(Controller::class.java)
+object ApiService {
+    val retrofitService: TriviaApi by lazy {
+        retrofit.create(TriviaApi::class.java)
     }
 }

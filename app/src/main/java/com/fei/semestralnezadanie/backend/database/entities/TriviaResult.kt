@@ -5,7 +5,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "quiz_results",
+    tableName = "trivia_results",
     indices = [
         Index(value = ["category"]),
         Index(value = ["correctAnswersCount"]),

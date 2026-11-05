@@ -6,7 +6,7 @@ import com.fei.semestralnezadanie.backend.api.models.QuestionResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface Controller {
+interface TriviaApi {
     @GET(Config.Api.CATEGORIES_ENDPOINT)
     suspend fun getCategories(): CategoryResponseDto
 
