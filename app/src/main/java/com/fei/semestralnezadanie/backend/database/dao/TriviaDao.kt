@@ -19,10 +19,11 @@ interface TriviaDao {
     suspend fun insertQuestionAnswers(answers: List<QuestionAnswer>)
 
     @Transaction
-    suspend fun insertTriviaRecord(result: TriviaResult, answers: List<QuestionAnswer>) {
+    suspend fun insertTriviaRecord(result: TriviaResult, answers: List<QuestionAnswer>): Long {
         val resultId = insertTriviaResult(result)
         val answersWithId = answers.map { it.copy(triviaResultId = resultId) }
         insertQuestionAnswers(answersWithId)
+        return resultId
     }
 
     @Query("SELECT * FROM trivia_results ORDER BY timestamp DESC")

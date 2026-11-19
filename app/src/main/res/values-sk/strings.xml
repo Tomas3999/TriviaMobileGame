@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Trivia Kvíz</string>
+
+    <!-- Welcome Page -->
+    <string name="welcome_title">Vitajte v Kvíze!</string>
+    <string name="welcome_subtitle">Nastavte si profil pre začiatok</string>
+    <string name="welcome_btn_gallery">Vybrať fotku z galérie</string>
+    <string name="welcome_avatar_label">Alebo vyberte avatara:</string>
+    <string name="welcome_name_label">Vaše meno / prezývka</string>
+    <string name="welcome_btn_continue">Pokračovať do kvízu</string>
+
+    <!-- Lobby Page -->
+    <string name="lobby_title">Nastavenie kvízu</string>
+    <string name="lobby_greeting">Ahoj, %1$s!</string>
+    <string name="lobby_category_label">Kategória</string>
+    <string name="lobby_category_any">Všetky kategórie</string>
+    <string name="lobby_category_loading">Načítavam kategórie…</string>
+    <string name="lobby_difficulty_label">Náročnosť</string>
+    <string name="lobby_difficulty_any">Akákoľvek</string>
+    <string name="lobby_difficulty_easy">Ľahká</string>
+    <string name="lobby_difficulty_medium">Stredná</string>
+    <string name="lobby_difficulty_hard">Ťažká</string>
+    <string name="lobby_type_label">Typ otázok</string>
+    <string name="lobby_type_any">Akýkoľvek typ</string>
+    <string name="lobby_type_multiple">Výber zo 4 možností</string>
+    <string name="lobby_type_boolean">Pravda / Nepravda</string>
+    <string name="lobby_mode_label">Herný mód</string>
+    <string name="lobby_mode_classic">Klasický (10 otázok)</string>
+    <string name="lobby_mode_marathon">Maratón (Nekonečný režim)</string>
+    <string name="lobby_btn_start">Spustiť kvíz</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_avatar">Profilový avatar používateľa</string>
+
+    <!-- Errors -->
+    <string name="error_failed_to_load_categories">Nepodarilo sa načítať kategórie</string>
+    <string name="api_error_no_results">Pre zvolenú kombináciu nie je k dispozícii dostatok otázok.</string>
+    <string name="api_error_invalid_parameter">Zadaný parameter požiadavky je neplatný.</string>
+    <string name="api_error_token_not_found">Relačný token nebol nájdený.</string>
+    <string name="api_error_token_empty">Všetky dostupné otázky pre tento filter už boli vyčerpané.</string>
+    <string name="api_error_rate_limit">Príliš veľa požiadaviek naraz. Počkajte chvíľu a skúste to znova.</string>
+    <string name="api_error_unknown">Nastala neznáma chyba siete.</string>
+
+    <!-- Game / Question Screen (SVK) -->
+    <string name="game_question_counter">Otázka %1$d z %2$d</string>
+    <string name="game_question_counter_marathon">Otázka %1$d</string>
+    <string name="game_timer_seconds">%1$d s</string>
+    <string name="game_score">Skóre: %1$d</string>
+    <string name="game_loading_questions">Pripravujem otázky…</string>
+    <string name="game_loading_marathon_batch">Dočítavam ďalšie otázky…</string>
+    <string name="game_time_up">Čas vypršal!</string>
+
+    <!-- Result Screen (SVK) -->
+    <string name="result_title_classic">Kvíz dokončený!</string>
+    <string name="result_title_marathon">Koniec maratónu!</string>
+    <string name="result_new_best">🎉 Nový osobný rekord!</string>
+    <string name="result_score_label">Skóre: %1$d z %2$d</string>
+    <string name="result_accuracy">Úspešnosť: %1$d %%</string>
+    <string name="result_time">Čas: %1$d s</string>
+    <string name="result_btn_share">Zdieľať výsledok</string>
+    <string name="result_btn_details">Rozbor otázok</string>
+    <string name="result_btn_lobby">Späť do menu</string>
+    <string name="result_share_text">Dosiahol som skóre %1$d/%2$d v kategórii \"%3$s\" za %4$d sekúnd v Trivia Kvíze! Prekonáš ma?</string>
+
+    <!-- Quiz Questions Detail Screen (SVK) -->
+    <string name="detail_title">Rozbor otázok</string>
+    <string name="detail_question_number">Otázka %1$d</string>
+    <string name="detail_time_spent">Čas odpovede: %1$d s</string>
+    <string name="detail_unanswered">Nezodpovedané (Vypršal čas)</string>
+    <string name="detail_btn_back">Späť</string>
+
+    <!-- History Screen (SVK) -->
+    <string name="history_title">História kvízov</string>
+    <string name="history_empty">Zatiaľ si neodohral žiadny kvíz.</string>
+    <string name="history_sort_newest">Najnovšie</string>
+    <string name="history_sort_score">Najlepšie skóre</string>
+    <string name="history_sort_time">Najrýchlejšie</string>
+    <string name="history_filter_all">Všetky kategórie</string>
+    <string name="history_item_score">Skóre: %1$d / %2$d</string>
+    <string name="history_item_time">Čas: %1$d s</string>
+
+    <!-- Bottom Navigation (SVK) -->
+    <string name="nav_play">Hrať</string>
+    <string name="nav_history">História</string>
+    <string name="nav_challenges">Výzva</string>
+
+    <!-- Profile Edit Dialog (SVK) -->
+    <string name="profile_dialog_title">Upraviť profil</string>
+    <string name="profile_btn_save">Uložiť zmeny</string>
+    <string name="profile_btn_cancel">Zrušiť</string>
+
+    <!-- Settings in Profile (SVK) -->
+    <string name="settings_notifications_title">Notifikácie</string>
+    <string name="settings_notifications_desc">Pripomienky pre 7-dňovú výzvu</string>
+    <string name="settings_language_title">Jazyk</string>
+    <string name="settings_lang_sk">Slovenčina</string>
+    <string name="settings_lang_en">English</string>
+
+    <!-- Challenges Screen (SVK) -->
+    <string name="challenges_streak_title">7 dní v rade (Streak)</string>
+    <string name="challenges_streak_desc">Odohraj aspoň 1 hru denne počas 7 dní po sebe s úspešnosťou minimálne 80 %.</string>
+    <string name="challenges_streak_today_done">✓ Dnes splnené!</string>
+    <string name="challenges_streak_today_pending">Dnešný kvíz ťa ešte čaká</string>
+    <string name="challenges_day_format">%1$d. deň</string>
+    <string name="challenges_streak_progress">Aktuálny streak: %1$d z 7 dní</string>
+    <string name="challenges_marathon_pb_title">Osobný rekord v maratóne</string>
+    <string name="challenges_marathon_pb_desc">Najvyšší počet správnych odpovedí za sebou v režime Maratón.</string>
+    <string name="challenges_marathon_pb_score">%1$d správnych odpovedí</string>
+</resources>

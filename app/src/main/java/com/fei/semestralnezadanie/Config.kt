@@ -27,6 +27,9 @@ object Config {
         val BUTTON_HEIGHT = 56.dp
         val AVATAR_SIZE_SMALL = 40.dp
         val AVATAR_SIZE_LARGE = 100.dp
+        val AVATAR_BORDER_WIDTH = 2.dp
+        val AVATAR_INNER_ICON_SIZE = 64.dp
+        val PROGRESS_INDICATOR_SIZE = 24.dp
     }
 
     object Api {
@@ -39,6 +42,7 @@ object Config {
         const val QUESTION_TIME_LIMIT_SECONDS = 15L
         const val CLASSIC_TRIVIA_QUESTION_COUNT = 10
         const val MARATHON_BATCH_SIZE = 50
+        const val QUESTION_TIME_LIMIT_WARNING = 5L
     }
 
     object Gamification {
@@ -51,6 +55,7 @@ object Config {
         const val KEY_USER_NAME = "key_user_name"
         const val KEY_AVATAR_URI = "key_avatar_uri"
         const val KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed"
+        const val KEY_LANGUAGE_CODE = "key_language_code"
     }
 
     object Notifications {
@@ -58,5 +63,12 @@ object Config {
         const val CHANNEL_NAME = "Trivia Reminders"
         const val STREAK_REMINDER_WORK_TAG = "streak_reminder_work"
         const val INACTIVITY_REMINDER_WORK_TAG = "inactivity_reminder_work"
+        const val NOTIFICATIONS_DEFAULT_ENABLED = false
+    }
+
+    object App {
+        const val LOADER_DELAY_MILLIS = 400L
+        const val DEFAULT_LANGUAGE_CODE = "sk"
+        val SUPPORTED_LANGUAGES = listOf("sk", "en")
     }
 }
