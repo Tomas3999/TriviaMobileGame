@@ -3,7 +3,7 @@
     <string name="app_name">Trivia Kvíz</string>
 
     <!-- Welcome Page -->
-    <string name="welcome_title">Vitajte v Kvíze!</string>
+    <string name="welcome_title">Kvíz</string>
     <string name="welcome_subtitle">Nastavte si profil pre začiatok</string>
     <string name="welcome_btn_gallery">Vybrať fotku z galérie</string>
     <string name="welcome_avatar_label">Alebo vyberte avatara:</string>

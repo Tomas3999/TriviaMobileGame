@@ -58,10 +58,11 @@ class MainActivity : AppCompatActivity() {
                             AppNavigation(
                                 startDestination = startDestination,
                                 userProfile = profile,
-                                onUpdateProfile = { name, avatarUri, notificationsEnabled, languageCode ->
+                                onUpdateProfile = { name, avatarUri, avatarBorderColorKey, notificationsEnabled, languageCode ->
                                     mainViewModel.updateProfile(
                                         name = name,
                                         avatarUri = avatarUri,
+                                        avatarBorderColorKey = avatarBorderColorKey,
                                         notificationsEnabled = notificationsEnabled,
                                         languageCode = languageCode
                                     )

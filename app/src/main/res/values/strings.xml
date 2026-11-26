@@ -2,7 +2,7 @@
     <string name="app_name">Trivia Quiz</string>
 
     <!-- Welcome Page -->
-    <string name="welcome_title">Welcome to Trivia Quiz!</string>
+    <string name="welcome_title">Trivia Quiz</string>
     <string name="welcome_subtitle">Set up your profile to get started</string>
     <string name="welcome_btn_gallery">Choose photo from gallery</string>
     <string name="welcome_avatar_label">Or pick an avatar:</string>

@@ -2,6 +2,7 @@ package com.fei.semestralnezadanie.frontend.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -23,6 +24,7 @@ import com.fei.semestralnezadanie.backend.datastore.models.User
 import com.fei.semestralnezadanie.frontend.challenges.ChallengesPage
 import com.fei.semestralnezadanie.frontend.components.ProfileDialog
 import com.fei.semestralnezadanie.frontend.components.UserAvatar
+import com.fei.semestralnezadanie.frontend.enums.AvatarColor
 import com.fei.semestralnezadanie.frontend.game.GamePage
 import com.fei.semestralnezadanie.frontend.game.questions.QuestionsPage
 import com.fei.semestralnezadanie.frontend.game.result.ResultPage
@@ -36,7 +38,7 @@ import java.net.URLDecoder
 fun AppNavigation(
     startDestination: String,
     userProfile: User,
-    onUpdateProfile: (name: String, avatarUri: String?, notificationsEnabled: Boolean, languageCode: String) -> Unit,
+    onUpdateProfile: (name: String, avatarUri: String?, avatarBorderColorKey: String?, notificationsEnabled: Boolean, languageCode: String) -> Unit,
     navController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -67,10 +69,14 @@ fun AppNavigation(
                         )
                     },
                     actions = {
+                        val avatarBorderColor = AvatarColor.getColorByKey(userProfile.avatarBorderColorKey)
+                            ?: MaterialTheme.colorScheme.primary
+
                         UserAvatar(
                             modifier = Modifier.padding(end = Config.UI.SPACING_MEDIUM),
                             avatarUri = userProfile.avatarUri,
                             size = Config.UI.AVATAR_SIZE_SMALL,
+                            borderColor = avatarBorderColor,
                             onClick = { showProfileDialog = true }
                         )
                     }
@@ -219,11 +225,18 @@ fun AppNavigation(
         ProfileDialog(
             currentName = userProfile.name,
             currentAvatarUri = userProfile.avatarUri,
+            currentAvatarBorderColorKey = userProfile.avatarBorderColorKey,
             currentNotificationsEnabled = userProfile.notificationsEnabled,
             currentLanguageCode = userProfile.languageCode,
             onDismiss = { showProfileDialog = false },
-            onSaveProfile = { newName, newAvatarUri, notificationsEnabled, newLanguageCode ->
-                onUpdateProfile(newName, newAvatarUri, notificationsEnabled, newLanguageCode)
+            onSaveProfile = { newName, newAvatarUri, newBorderColorKey, notificationsEnabled, newLanguageCode ->
+                onUpdateProfile(
+                    newName,
+                    newAvatarUri,
+                    newBorderColorKey,
+                    notificationsEnabled,
+                    newLanguageCode
+                )
                 showProfileDialog = false
             }
         )

@@ -16,7 +16,8 @@ import javax.inject.Inject
 // Stav obrazovky (UI State)
 data class WelcomeUiState(
     val name: String = "",
-    val avatarUri: String? = null, // URI z galérie alebo názov predvoľby (napr. "avatar_1")
+    val avatarUri: String? = null,
+    val avatarBorderColorKey: String? = null,
     val isCompleted: Boolean = false
 ) {
     // Tlačidlo "Pokračovať" je aktívne len vtedy, keď používateľ zadal meno
@@ -41,6 +42,11 @@ class WelcomeViewModel @Inject constructor(
         _uiState.update { it.copy(avatarUri = avatarUri) }
     }
 
+    // Aktualizácia zvolenej farby obrysu avatara
+    fun onAvatarBorderColorSelected(colorKey: String) {
+        _uiState.update { it.copy(avatarBorderColorKey = colorKey) }
+    }
+
     // Uloženie do DataStore a dokončenie onboardingu
     fun saveProfileAndContinue() {
         val currentState = _uiState.value
@@ -54,6 +60,7 @@ class WelcomeViewModel @Inject constructor(
             userManager.saveUserProfile(
                 name = currentState.name.trim(),
                 avatarUri = currentState.avatarUri,
+                avatarBorderColorKey = currentState.avatarBorderColorKey,
                 languageCode = currentLang
             )
             userManager.setOnboardingCompleted(true)

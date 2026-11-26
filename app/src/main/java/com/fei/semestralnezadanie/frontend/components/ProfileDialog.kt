@@ -1,7 +1,8 @@
 package com.fei.semestralnezadanie.frontend.components
 
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -11,9 +12,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.core.os.LocaleListCompat
 import com.fei.semestralnezadanie.Config
 import com.fei.semestralnezadanie.R
 
@@ -21,13 +22,21 @@ import com.fei.semestralnezadanie.R
 fun ProfileDialog(
     currentName: String,
     currentAvatarUri: String?,
+    currentAvatarBorderColorKey: String? = null,
     currentNotificationsEnabled: Boolean,
     currentLanguageCode: String = Config.App.DEFAULT_LANGUAGE_CODE,
     onDismiss: () -> Unit,
-    onSaveProfile: (newName: String, newAvatarUri: String?, notificationsEnabled: Boolean, languageCode: String) -> Unit
+    onSaveProfile: (
+        newName: String,
+        newAvatarUri: String?,
+        newAvatarBorderColorKey: String?,
+        notificationsEnabled: Boolean,
+        languageCode: String
+    ) -> Unit
 ) {
     var name by remember { mutableStateOf(currentName) }
     var selectedAvatarUri by remember { mutableStateOf(currentAvatarUri) }
+    var selectedAvatarBorderColorKey by remember { mutableStateOf(currentAvatarBorderColorKey) }
     var notificationsEnabled by remember { mutableStateOf(currentNotificationsEnabled) }
 
     // Inicializácia vybraného jazyka z aktuálne načítaného profilu z DataStore
@@ -50,20 +59,29 @@ fun ProfileDialog(
                 avatarUri = selectedAvatarUri,
                 onNameChange = { name = it },
                 onAvatarChange = { selectedAvatarUri = it },
+                avatarBorderColorKey = selectedAvatarBorderColorKey,
+                onAvatarBorderColorChange = { selectedAvatarBorderColorKey = it },
                 notificationsEnabled = notificationsEnabled,
                 onNotificationsChange = { notificationsEnabled = it },
                 selectedLanguage = selectedLanguage,
                 onLanguageChange = { newLang ->
                     selectedLanguage = newLang
                 },
-                showSettingsSection = true
+                showSettingsSection = true,
+                modifier = Modifier.verticalScroll(rememberScrollState())
             )
         },
         confirmButton = {
             Button(
                 onClick = {
                     if (name.trim().isNotEmpty()) {
-                        onSaveProfile(name.trim(), selectedAvatarUri, notificationsEnabled, selectedLanguage)
+                        onSaveProfile(
+                            name.trim(),
+                            selectedAvatarUri,
+                            selectedAvatarBorderColorKey,
+                            notificationsEnabled,
+                            selectedLanguage
+                        )
                     }
                 },
                 enabled = name.trim().isNotEmpty(),

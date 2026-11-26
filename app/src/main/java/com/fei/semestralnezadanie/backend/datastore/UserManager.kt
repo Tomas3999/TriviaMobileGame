@@ -22,6 +22,7 @@ class UserManager(private val context: Context) {
     companion object {
         private val KEY_USER_NAME = stringPreferencesKey(Config.DataStore.KEY_USER_NAME)
         private val KEY_AVATAR_URI = stringPreferencesKey(Config.DataStore.KEY_AVATAR_URI)
+        private val KEY_AVATAR_BORDER_COLOR = stringPreferencesKey("key_avatar_border_color")
         private val KEY_ONBOARDING_COMPLETED = booleanPreferencesKey(Config.DataStore.KEY_IS_ONBOARDING_COMPLETED)
         private val KEY_NOTIFICATIONS_ENABLED = booleanPreferencesKey("key_notifications_enabled")
         private val KEY_LANGUAGE_CODE = stringPreferencesKey(Config.DataStore.KEY_LANGUAGE_CODE)
@@ -41,6 +42,7 @@ class UserManager(private val context: Context) {
         User(
             name = preferences[KEY_USER_NAME] ?: "",
             avatarUri = preferences[KEY_AVATAR_URI],
+            avatarBorderColorKey = preferences[KEY_AVATAR_BORDER_COLOR],
             isOnboardingCompleted = preferences[KEY_ONBOARDING_COMPLETED] ?: false,
             notificationsEnabled = preferences[KEY_NOTIFICATIONS_ENABLED] ?: Config.Notifications.NOTIFICATIONS_DEFAULT_ENABLED,
             languageCode = currentAppLanguage
@@ -50,6 +52,7 @@ class UserManager(private val context: Context) {
     suspend fun saveUserProfile(
         name: String,
         avatarUri: String?,
+        avatarBorderColorKey: String? = null,
         notificationsEnabled: Boolean? = null,
         languageCode: String? = null
     ) {
@@ -59,6 +62,11 @@ class UserManager(private val context: Context) {
                 preferences[KEY_AVATAR_URI] = avatarUri
             } else {
                 preferences.remove(KEY_AVATAR_URI)
+            }
+            if (avatarBorderColorKey != null) {
+                preferences[KEY_AVATAR_BORDER_COLOR] = avatarBorderColorKey
+            } else {
+                preferences.remove(KEY_AVATAR_BORDER_COLOR)
             }
             if (notificationsEnabled != null) {
                 preferences[KEY_NOTIFICATIONS_ENABLED] = notificationsEnabled

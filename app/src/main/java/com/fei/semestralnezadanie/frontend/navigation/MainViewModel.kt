@@ -26,6 +26,7 @@ class MainViewModel @Inject constructor(
     fun updateProfile(
         name: String,
         avatarUri: String?,
+        avatarBorderColorKey: String?,
         notificationsEnabled: Boolean,
         languageCode: String
     ) {
@@ -33,6 +34,7 @@ class MainViewModel @Inject constructor(
             userManager.saveUserProfile(
                 name = name,
                 avatarUri = avatarUri,
+                avatarBorderColorKey = avatarBorderColorKey,
                 notificationsEnabled = notificationsEnabled,
                 languageCode = languageCode
             )

@@ -5,13 +5,16 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,9 +29,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -39,6 +44,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,14 +52,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import com.fei.semestralnezadanie.Config
 import com.fei.semestralnezadanie.R
+import com.fei.semestralnezadanie.frontend.enums.AvatarColor
 import com.fei.semestralnezadanie.frontend.enums.AvatarPreset
 import java.io.File
 import java.io.FileOutputStream
@@ -65,6 +82,8 @@ fun ProfileForm(
     avatarUri: String?,
     onNameChange: (String) -> Unit,
     onAvatarChange: (String) -> Unit,
+    avatarBorderColorKey: String? = null,
+    onAvatarBorderColorChange: (String) -> Unit = {},
     notificationsEnabled: Boolean = true,
     onNotificationsChange: (Boolean) -> Unit = {},
     selectedLanguage: String = "sk",
@@ -95,72 +114,189 @@ fun ProfileForm(
         }
     )
 
+    val currentBorderColor = AvatarColor.getColorByKey(avatarBorderColorKey)
+        ?: MaterialTheme.colorScheme.primary
+
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Config.UI.SPACING_MEDIUM)
     ) {
-        // 1. Sekcia avatara
+        // 1. Sekcia avatara a výberu farby obrysu
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Config.UI.SPACING_SMALL)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            UserAvatar(
-                avatarUri = avatarUri,
-                size = Config.UI.AVATAR_SIZE_LARGE
-            )
+            val openGallery = {
+                photoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            // Veľký avatar + ikonka na galériu v rohu
+            Box(contentAlignment = Alignment.BottomEnd) {
+                UserAvatar(
+                    avatarUri = avatarUri,
+                    size = Config.UI.AVATAR_SIZE_LARGE,
+                    borderColor = currentBorderColor,
+                    onClick = openGallery
+                )
 
-            SecondaryButton(
-                text = stringResource(R.string.welcome_btn_gallery),
-                onClick = {
-                    photoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
+                Surface(
+                    onClick = openGallery,
+                    modifier = Modifier.size(36.dp),
+                    shape = CircleShape,
+                    color = currentBorderColor,
+                    shadowElevation = 4.dp,
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.surface)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.PhotoLibrary,
+                            contentDescription = stringResource(R.string.welcome_btn_gallery),
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
                 }
-            )
+            }
 
-            // Riadok s predvoľbami avatarov v jemnej pilulke
+            // Pilulka s predvoľbami ikon + tlačidlom farby obrysu
+            var colorMenuExpanded by remember { mutableStateOf(false) }
+
             Surface(
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(Config.UI.SPACING_SMALL),
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // Predvoľby ikon avatara
                     AvatarPreset.entries.forEach { preset ->
                         val isSelected = avatarUri == preset.key
-                        Box(
-                            modifier = Modifier
-                                .size(Config.UI.AVATAR_SIZE_SMALL)
-                                .clip(CircleShape)
-                                .background(
-                                    if (isSelected) MaterialTheme.colorScheme.primary
-                                    else MaterialTheme.colorScheme.surface
-                                )
-                                .border(
-                                    width = if (isSelected) 2.dp else 1.dp,
-                                    color = if (isSelected) MaterialTheme.colorScheme.primaryContainer
-                                    else MaterialTheme.colorScheme.outlineVariant,
-                                    shape = CircleShape
-                                )
-                                .clickable { onAvatarChange(preset.key) },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = preset.icon,
-                                contentDescription = null,
-                                tint = if (isSelected) MaterialTheme.colorScheme.onPrimary
-                                else MaterialTheme.colorScheme.onSurfaceVariant
+
+                        Box(contentAlignment = Alignment.BottomEnd) {
+                            UserAvatar(
+                                avatarUri = preset.key,
+                                size = Config.UI.AVATAR_SIZE_SMALL,
+                                borderColor = if (isSelected) currentBorderColor
+                                else MaterialTheme.colorScheme.outlineVariant,
+                                onClick = { onAvatarChange(preset.key) }
                             )
+
+                            if (isSelected) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                        .clip(CircleShape)
+                                        .background(currentBorderColor)
+                                        .border(1.5.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.surface,
+                                        modifier = Modifier.size(11.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // Jemný zvislý oddeľovač
+                    Box(
+                        modifier = Modifier
+                            .width(1.dp)
+                            .height(24.dp)
+                            .background(MaterialTheme.colorScheme.outlineVariant)
+                    )
+
+                    // Farebné tlačidlo + popup rozbaľovaný VŽDY DOĽAVA
+                    Box {
+                        val density = LocalDensity.current
+                        val marginPx = with(density) { 6.dp.roundToPx() }
+
+                        val leftAlignedPositionProvider = remember(marginPx) {
+                            object : PopupPositionProvider {
+                                override fun calculatePosition(
+                                    anchorBounds: IntRect,
+                                    windowSize: IntSize,
+                                    layoutDirection: LayoutDirection,
+                                    popupContentSize: IntSize
+                                ): IntOffset {
+                                    // Pravý okraj popupu = pravý okraj tlačidla -> rozbalí sa DOĽAVA
+                                    val x = (anchorBounds.right - popupContentSize.width)
+                                        .coerceAtLeast(0)
+
+                                    val yBelow = anchorBounds.bottom + marginPx
+                                    val y = if (yBelow + popupContentSize.height <= windowSize.height) {
+                                        yBelow
+                                    } else {
+                                        (anchorBounds.top - popupContentSize.height - marginPx)
+                                            .coerceAtLeast(0)
+                                    }
+                                    return IntOffset(x, y)
+                                }
+                            }
+                        }
+
+                        Surface(
+                            onClick = { colorMenuExpanded = true },
+                            modifier = Modifier.size(Config.UI.AVATAR_SIZE_SMALL),
+                            shape = CircleShape,
+                            color = currentBorderColor,
+                            border = BorderStroke(2.5.dp, MaterialTheme.colorScheme.surface),
+                            shadowElevation = 2.dp
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardArrowDown,
+                                    contentDescription = null,
+                                    tint = if (avatarBorderColorKey == null) MaterialTheme.colorScheme.onPrimary
+                                    else Color.White,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+
+                        if (colorMenuExpanded) {
+                            Popup(
+                                popupPositionProvider = leftAlignedPositionProvider,
+                                onDismissRequest = { colorMenuExpanded = false },
+                                properties = PopupProperties(focusable = true)
+                            ) {
+                                Surface(
+                                    shape = RoundedCornerShape(Config.UI.CORNER_RADIUS_MEDIUM),
+                                    color = MaterialTheme.colorScheme.surface,
+                                    tonalElevation = 3.dp,
+                                    shadowElevation = 6.dp,
+                                    border = BorderStroke(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                                    )
+                                ) {
+                                    Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
+                                        AvatarColorPicker(
+                                            selectedColorKey = avatarBorderColorKey,
+                                            onColorSelected = {
+                                                onAvatarBorderColorChange(it)
+                                                colorMenuExpanded = false
+                                            },
+                                            columns = 3
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(4.dp))
 
         // 2. Pole na meno
         OutlinedTextField(
@@ -178,7 +314,7 @@ fun ProfileForm(
             shape = RoundedCornerShape(Config.UI.CORNER_RADIUS_MEDIUM)
         )
 
-        // 3. NASTAVENIA v čistej karte
+        // 3. NASTAVENIA: Notifikácie a Jazyk
         if (showSettingsSection) {
             var languageMenuExpanded by remember { mutableStateOf(false) }
 
@@ -363,16 +499,41 @@ private fun saveImageToInternalStorage(context: Context, uri: Uri): String? {
     }
 }
 
+private val PreviewRegistryOwner = object : ActivityResultRegistryOwner {
+    override val activityResultRegistry = object : ActivityResultRegistry() {
+        override fun <I, O> onLaunch(
+            requestCode: Int,
+            contract: ActivityResultContract<I, O>,
+            input: I,
+            options: ActivityOptionsCompat?
+        ) {}
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun ProfileFormPreview() {
-    Surface(modifier = Modifier.padding(16.dp)) {
-        ProfileForm(
-            name = "Janko",
-            avatarUri = AvatarPreset.entries.firstOrNull()?.key,
-            onNameChange = {},
-            onAvatarChange = {},
-            showSettingsSection = true
-        )
+    var name by remember { mutableStateOf("Janko") }
+    var avatarUri by remember { mutableStateOf<String?>(AvatarPreset.MOOD.key) }
+    var borderColorKey by remember { mutableStateOf<String?>(AvatarColor.INDIGO.key) }
+    var notifications by remember { mutableStateOf(true) }
+    var language by remember { mutableStateOf("sk") }
+
+    CompositionLocalProvider(LocalActivityResultRegistryOwner provides PreviewRegistryOwner) {
+        Surface(modifier = Modifier.padding(16.dp)) {
+            ProfileForm(
+                name = name,
+                avatarUri = avatarUri,
+                onNameChange = { name = it },
+                onAvatarChange = { avatarUri = it },
+                avatarBorderColorKey = borderColorKey,
+                onAvatarBorderColorChange = { borderColorKey = it },
+                notificationsEnabled = notifications,
+                onNotificationsChange = { notifications = it },
+                selectedLanguage = language,
+                onLanguageChange = { language = it },
+                showSettingsSection = true
+            )
+        }
     }
 }
