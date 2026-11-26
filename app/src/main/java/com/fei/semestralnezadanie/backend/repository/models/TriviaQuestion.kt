@@ -8,7 +8,8 @@ data class TriviaQuestion(
     val options: List<String>,
     val correctAnswerIndex: Int,
     val category: String,
-    val difficulty: String
+    val difficulty: String,
+    val type: String // "multiple" alebo "boolean"
 )
 
 fun QuestionDto.toDomain(): TriviaQuestion {
@@ -16,14 +17,20 @@ fun QuestionDto.toDomain(): TriviaQuestion {
     val decodedCorrect = this.correctAnswer.decodeHtml()
     val decodedIncorrect = this.incorrectAnswers.map { it.decodeHtml() }
 
-    val shuffledOptions = (decodedIncorrect + decodedCorrect).shuffled()
-    val correctIndex = shuffledOptions.indexOf(decodedCorrect)
+    val finalOptions = if (this.type == "boolean") {
+        listOf("True", "False")
+    } else {
+        (decodedIncorrect + decodedCorrect).shuffled()
+    }
+
+    val correctIndex = finalOptions.indexOf(decodedCorrect)
 
     return TriviaQuestion(
         question = decodedQuestion,
-        options = shuffledOptions,
+        options = finalOptions,
         correctAnswerIndex = correctIndex,
         category = this.category.decodeHtml(),
-        difficulty = this.difficulty
+        difficulty = this.difficulty,
+        type = this.type
     )
 }

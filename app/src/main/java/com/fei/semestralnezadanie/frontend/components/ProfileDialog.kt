@@ -63,10 +63,6 @@ fun ProfileDialog(
             Button(
                 onClick = {
                     if (name.trim().isNotEmpty()) {
-                        // Aplikovať zmenu jazyka pri potvrdení tlačidlom Uložiť
-                        AppCompatDelegate.setApplicationLocales(
-                            LocaleListCompat.forLanguageTags(selectedLanguage)
-                        )
                         onSaveProfile(name.trim(), selectedAvatarUri, notificationsEnabled, selectedLanguage)
                     }
                 },

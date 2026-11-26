@@ -17,12 +17,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -72,7 +74,6 @@ fun ChallengesPage(
                     .padding(Config.UI.SPACING_LARGE),
                 verticalArrangement = Arrangement.spacedBy(Config.UI.SPACING_MEDIUM)
             ) {
-                // Hlavička karty s ikonou ohňa
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -81,7 +82,7 @@ fun ChallengesPage(
                     Icon(
                         imageVector = Icons.Default.LocalFireDepartment,
                         contentDescription = null,
-                        tint = Color(0xFFFF6D00), // Ohnivá oranžová farba
+                        tint = Color(0xFFFF6D00),
                         modifier = Modifier.size(32.dp)
                     )
                     Text(
@@ -92,14 +93,12 @@ fun ChallengesPage(
                     )
                 }
 
-                // Popis pravidiel
                 Text(
                     text = stringResource(R.string.challenges_streak_desc),
                     fontSize = Config.UI.FONT_SIZE_BODY_SMALL,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                // Stav na dnešný deň (Splnené vs. Čaká ťa)
                 Text(
                     text = if (state.isTodayCompleted) {
                         stringResource(R.string.challenges_streak_today_done)
@@ -113,7 +112,6 @@ fun ChallengesPage(
 
                 Spacer(modifier = Modifier.height(Config.UI.SPACING_SMALL))
 
-                // Vizuálny ukazovateľ 7 dní (Kruhy pre dni 1 až 7)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -167,7 +165,6 @@ fun ChallengesPage(
                     }
                 }
 
-                // Celkový text postupu
                 Text(
                     text = stringResource(
                         R.string.challenges_streak_progress,
@@ -194,7 +191,6 @@ fun ChallengesPage(
                     .padding(Config.UI.SPACING_LARGE),
                 verticalArrangement = Arrangement.spacedBy(Config.UI.SPACING_MEDIUM)
             ) {
-                // Hlavička s pohárom
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -220,7 +216,6 @@ fun ChallengesPage(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                // Skóre rekordu
                 Text(
                     text = stringResource(
                         R.string.challenges_marathon_pb_score,
@@ -230,6 +225,103 @@ fun ChallengesPage(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
+            }
+        }
+
+        // --- 3. KARTA: POKROK V KATEGÓRIÁCH (Progress bary voči OpenTDB) ---
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(Config.UI.CORNER_RADIUS_LARGE),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Config.UI.SPACING_LARGE),
+                verticalArrangement = Arrangement.spacedBy(Config.UI.SPACING_MEDIUM)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Config.UI.SPACING_SMALL)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.BarChart,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.challenges_mastery_title),
+                        fontSize = Config.UI.FONT_SIZE_TITLE,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                if (state.categoryMasteryList.isEmpty()) {
+                    Text(
+                        text = stringResource(R.string.challenges_mastery_empty),
+                        fontSize = Config.UI.FONT_SIZE_BODY_SMALL,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(Config.UI.SPACING_MEDIUM)
+                    ) {
+                        state.categoryMasteryList.forEach { item ->
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(Config.UI.SPACING_EXTRA_SMALL)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = item.categoryName,
+                                        fontSize = Config.UI.FONT_SIZE_BODY_MEDIUM,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier.weight(1f)
+                                    )
+
+                                    val countText = if (item.totalInApi != null) {
+                                        stringResource(
+                                            R.string.challenges_mastery_format,
+                                            item.correctCount,
+                                            item.totalInApi
+                                        )
+                                    } else {
+                                        stringResource(
+                                            R.string.challenges_mastery_offline_format,
+                                            item.correctCount
+                                        )
+                                    }
+
+                                    Text(
+                                        text = countText,
+                                        fontSize = Config.UI.FONT_SIZE_BODY_SMALL,
+                                        fontWeight = FontWeight.Medium,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+
+                                LinearProgressIndicator(
+                                    progress = { item.progress },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(Config.UI.SPACING_SMALL)
+                                        .clip(RoundedCornerShape(Config.UI.CORNER_RADIUS_SMALL)),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    trackColor = MaterialTheme.colorScheme.surface
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }

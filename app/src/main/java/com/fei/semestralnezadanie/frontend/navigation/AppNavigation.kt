@@ -161,6 +161,9 @@ fun AppNavigation(
                         navController.navigate(resultRoute) {
                             popUpTo(Screen.Game.route) { inclusive = true }
                         }
+                    },
+                    onAbortClassicGame = {
+                        navController.popBackStack()
                     }
                 )
             }

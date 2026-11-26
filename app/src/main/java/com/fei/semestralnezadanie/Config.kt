@@ -36,6 +36,8 @@ object Config {
         const val BASE_URL = "https://opentdb.com/"
         const val CATEGORIES_ENDPOINT = "api_category.php"
         const val QUESTIONS_ENDPOINT = "api.php"
+        const val TOKEN_ENDPOINT = "api_token.php"
+        const val COUNT_ENDPOINT = "api_count.php"
     }
 
     object Trivia {
@@ -63,6 +65,16 @@ object Config {
         const val CHANNEL_NAME = "Trivia Reminders"
         const val STREAK_REMINDER_WORK_TAG = "streak_reminder_work"
         const val INACTIVITY_REMINDER_WORK_TAG = "inactivity_reminder_work"
+
+        // ID jednotlivých notifikácií
+        const val NOTIFICATION_ID_STREAK = 1001
+        const val NOTIFICATION_ID_INACTIVITY = 1002
+        const val NOTIFICATION_ID_MARATHON = 1003
+
+        // Pravidlá časovania pre WorkManager
+        const val INACTIVITY_THRESHOLD_DAYS = 3L
+        const val REMINDER_INTERVAL_HOURS = 12L
+
         const val NOTIFICATIONS_DEFAULT_ENABLED = false
     }
 

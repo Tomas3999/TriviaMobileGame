@@ -107,4 +107,19 @@
     <string name="challenges_marathon_pb_title">Osobný rekord v maratóne</string>
     <string name="challenges_marathon_pb_desc">Najvyšší počet správnych odpovedí za sebou v režime Maratón.</string>
     <string name="challenges_marathon_pb_score">%1$d správnych odpovedí</string>
+
+    <!-- Notifications (SVK) -->
+    <string name="notif_streak_title">Udrž si svoj Streak! 🔥</string>
+    <string name="notif_streak_body">Dnes si ešte nesplnil kvíz v rámci tvojej 7-dňovej výzvy!</string>
+    <string name="notif_inactivity_title">Čakajú ťa nové otázky! 🧠</string>
+    <string name="notif_inactivity_body">Už si tu dlhšie nebol. Príď si otestovať svoje vedomosti!</string>
+    <string name="notif_marathon_title">Nový rekord v maratóne! 🏆</string>
+    <string name="notif_marathon_body">Skvelá práca! Prekonal si osobný rekord s %1$d správnymi odpoveďami!</string>
+
+    <string name="game_btn_exit">Ukončiť kvíz</string>
+
+    <string name="challenges_mastery_title">Pokrok v kategóriách</string>
+    <string name="challenges_mastery_format">%1$d / %2$d otázok</string>
+    <string name="challenges_mastery_offline_format">%1$d správnych</string>
+    <string name="challenges_mastery_empty">Odohraj kvíz a sleduj svoj pokrok v kategóriách.</string>
 </resources>

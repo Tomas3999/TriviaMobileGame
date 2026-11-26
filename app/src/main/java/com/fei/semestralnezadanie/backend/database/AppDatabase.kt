@@ -7,15 +7,17 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.fei.semestralnezadanie.backend.database.converters.Converters
 import com.fei.semestralnezadanie.backend.database.dao.TriviaDao
+import com.fei.semestralnezadanie.backend.database.entities.CategoryInfo
 import com.fei.semestralnezadanie.backend.database.entities.QuestionAnswer
 import com.fei.semestralnezadanie.backend.database.entities.TriviaResult
 
 @Database(
     entities = [
         TriviaResult::class,
-        QuestionAnswer::class
+        QuestionAnswer::class,
+        CategoryInfo::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

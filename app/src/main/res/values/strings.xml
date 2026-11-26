@@ -107,4 +107,19 @@
     <string name="challenges_marathon_pb_desc">Highest number of correct answers in a row in Marathon mode.</string>
     <string name="challenges_marathon_pb_score">%1$d correct answers</string>
 
+    <!-- Notifications (EN) -->
+    <string name="notif_streak_title">Keep your streak alive! 🔥</string>
+    <string name="notif_streak_body">You haven\'t completed today\'s quiz for your 7-day challenge yet!</string>
+    <string name="notif_inactivity_title">New questions are waiting! 🧠</string>
+    <string name="notif_inactivity_body">It has been a while since your last quiz. Come test your knowledge!</string>
+    <string name="notif_marathon_title">New Marathon Record! 🏆</string>
+    <string name="notif_marathon_body">Awesome! You set a new personal best of %1$d correct answers!</string>
+
+    <string name="game_btn_exit">Exit Quiz</string>
+
+    <string name="challenges_mastery_title">Category Mastery</string>
+    <string name="challenges_mastery_format">%1$d / %2$d questions</string>
+    <string name="challenges_mastery_offline_format">%1$d correct</string>
+    <string name="challenges_mastery_empty">Play a quiz to start tracking your progress across categories.</string>
+
 </resources>

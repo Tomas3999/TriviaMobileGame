@@ -10,7 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -33,9 +37,10 @@ import com.fei.semestralnezadanie.backend.repository.models.TriviaQuestion
 fun Question(
     question: TriviaQuestion,
     questionIndex: Int,
-    totalQuestionsCount: Int?, // null, ak je to Maratón
+    totalQuestionsCount: Int?, // null = Maratón
     remainingSeconds: Long,
     onAnswerSelected: (Int) -> Unit,
+    onCloseClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -45,7 +50,7 @@ fun Question(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // 1. Hlavička: Poradové číslo otázky a 15-sekundový časovač
+        // 1. Hlavička: Poradové číslo, časovač a ikonka X
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -55,7 +60,6 @@ fun Question(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Číslo otázky
                 Text(
                     text = if (totalQuestionsCount != null) {
                         stringResource(R.string.game_question_counter, questionIndex, totalQuestionsCount)
@@ -67,19 +71,30 @@ fun Question(
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                // Odpočet sekúnd
-                Text(
-                    text = stringResource(R.string.game_timer_seconds, remainingSeconds),
-                    fontSize = Config.UI.FONT_SIZE_TITLE,
-                    fontWeight = FontWeight.Bold,
-                    color = if (remainingSeconds <= Config.Trivia.QUESTION_TIME_LIMIT_WARNING) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.onSurface
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Config.UI.SPACING_SMALL)
+                ) {
+                    Text(
+                        text = stringResource(R.string.game_timer_seconds, remainingSeconds),
+                        fontSize = Config.UI.FONT_SIZE_TITLE,
+                        fontWeight = FontWeight.Bold,
+                        color = if (remainingSeconds <= 5) MaterialTheme.colorScheme.error
+                        else MaterialTheme.colorScheme.onSurface
+                    )
+
+                    IconButton(onClick = onCloseClick) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = stringResource(R.string.game_btn_exit),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(Config.UI.SPACING_SMALL))
 
-            // Časová lišta
             LinearProgressIndicator(
                 progress = { remainingSeconds / Config.Trivia.QUESTION_TIME_LIMIT_SECONDS.toFloat() },
                 modifier = Modifier
@@ -91,7 +106,7 @@ fun Question(
             )
         }
 
-        // 2. Samotný text tejto jednej otázky
+        // 2. Znenie otázky
         Box(
             modifier = Modifier
                 .weight(1f)

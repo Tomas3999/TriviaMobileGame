@@ -16,7 +16,8 @@ import androidx.room.PrimaryKey
         )
     ],
     indices = [
-        Index(value = ["triviaResultId"])
+        Index(value = ["triviaResultId"]),
+        Index(value = ["category"])
     ]
 )
 data class QuestionAnswer(
@@ -27,5 +28,6 @@ data class QuestionAnswer(
     val options: List<String>,
     val selectedAnswer: Int?,
     val correctAnswer: Int,
+    val category: String,
     val timeSpentSeconds: Long
 )
