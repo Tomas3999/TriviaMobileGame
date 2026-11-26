@@ -41,7 +41,11 @@ fun UserAvatar(
             ),
         contentAlignment = Alignment.Center
     ) {
-        if (avatarUri?.startsWith("content://") == true) {
+        val isCustomImage = avatarUri?.startsWith("content://") == true ||
+                avatarUri?.startsWith("file://") == true ||
+                avatarUri?.startsWith("/") == true
+
+        if (isCustomImage) {
             AsyncImage(
                 model = avatarUri,
                 contentDescription = null,

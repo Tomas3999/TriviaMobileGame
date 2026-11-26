@@ -4,12 +4,23 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.fei.semestralnezadanie.Config
-import com.fei.semestralnezadanie.backend.database.AppDatabase
+import com.fei.semestralnezadanie.backend.database.dao.TriviaDao
 import com.fei.semestralnezadanie.backend.datastore.UserManager
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface QuizReminderWorkerEntryPoint {
+    fun getUserManager(): UserManager
+    fun getTriviaDao(): TriviaDao
+}
 
 class QuizReminderWorker(
     appContext: Context,
@@ -18,7 +29,13 @@ class QuizReminderWorker(
 
     override suspend fun doWork(): Result {
         return try {
-            val userManager = UserManager(applicationContext)
+            val entryPoint = EntryPointAccessors.fromApplication(
+                applicationContext,
+                QuizReminderWorkerEntryPoint::class.java
+            )
+            val userManager = entryPoint.getUserManager()
+            val triviaDao = entryPoint.getTriviaDao()
+
             val profile = userManager.userProfileFlow.first()
 
             // 1. Ak používateľ vypol notifikácie alebo nedokončil onboarding, končíme
@@ -26,8 +43,7 @@ class QuizReminderWorker(
                 return Result.success()
             }
 
-            // 2. Načítanie histórie kvízov z Room databázy
-            val triviaDao = AppDatabase.getDatabase(applicationContext).triviaDao
+            // 2. Načítanie histórie kvízov z Hilt-injected Room databázy
             val results = triviaDao.getAllResults().first()
 
             val now = System.currentTimeMillis()

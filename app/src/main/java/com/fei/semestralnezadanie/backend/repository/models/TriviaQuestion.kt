@@ -23,7 +23,8 @@ fun QuestionDto.toDomain(): TriviaQuestion {
         (decodedIncorrect + decodedCorrect).shuffled()
     }
 
-    val correctIndex = finalOptions.indexOf(decodedCorrect)
+    val correctIndex = finalOptions.indexOfFirst { it.equals(decodedCorrect, ignoreCase = true) }
+        .coerceAtLeast(0)
 
     return TriviaQuestion(
         question = decodedQuestion,

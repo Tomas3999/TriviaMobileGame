@@ -76,6 +76,8 @@ class GameViewModel @Inject constructor(
     private var hasMoreQuestionsInApi = true
     private var isWaitingForNextBatch = false
 
+    private var gameStartTimestamp = 0L
+    private var questionStartTimeMillis = 0L
     private var timerJob: Job? = null
 
     init {
@@ -229,21 +231,39 @@ class GameViewModel @Inject constructor(
 
     private fun startSingleTimer(resetRemaining: Boolean = true) {
         timerJob?.cancel()
+        val now = System.currentTimeMillis()
+
         if (resetRemaining) {
+            questionStartTimeMillis = now
+            if (gameStartTimestamp == 0L) {
+                gameStartTimestamp = now
+            }
             _uiState.update { it.copy(remainingSeconds = Config.Trivia.QUESTION_TIME_LIMIT_SECONDS) }
+        } else {
+            val alreadySpentSeconds = Config.Trivia.QUESTION_TIME_LIMIT_SECONDS - _uiState.value.remainingSeconds
+            questionStartTimeMillis = now - (alreadySpentSeconds * 1000L)
         }
 
         timerJob = viewModelScope.launch {
-            while (_uiState.value.remainingSeconds > 0) {
-                delay(1000L)
+            while (true) {
+                delay(200L)
+                val currentNow = System.currentTimeMillis()
+                val elapsedSeconds = (currentNow - questionStartTimeMillis) / 1000L
+                val remaining = (Config.Trivia.QUESTION_TIME_LIMIT_SECONDS - elapsedSeconds).coerceAtLeast(0L)
+                val totalDuration = if (gameStartTimestamp > 0L) (currentNow - gameStartTimestamp) / 1000L else 0L
+
                 _uiState.update {
                     it.copy(
-                        remainingSeconds = it.remainingSeconds - 1,
-                        totalGameDurationSeconds = it.totalGameDurationSeconds + 1
+                        remainingSeconds = remaining,
+                        totalGameDurationSeconds = totalDuration
                     )
                 }
+
+                if (remaining <= 0L) {
+                    submitAnswer(null)
+                    break
+                }
             }
-            submitAnswer(null)
         }
     }
 
@@ -268,7 +288,13 @@ class GameViewModel @Inject constructor(
 
         val currentQuestion = _uiState.value.currentQuestion ?: return
         val isCorrect = selectedAnswerIndex != null && selectedAnswerIndex == currentQuestion.correctAnswerIndex
-        val timeSpent = Config.Trivia.QUESTION_TIME_LIMIT_SECONDS - _uiState.value.remainingSeconds
+        val now = System.currentTimeMillis()
+
+        val timeSpent = if (questionStartTimeMillis > 0L) {
+            ((now - questionStartTimeMillis) / 1000L).coerceIn(1L, Config.Trivia.QUESTION_TIME_LIMIT_SECONDS)
+        } else {
+            (Config.Trivia.QUESTION_TIME_LIMIT_SECONDS - _uiState.value.remainingSeconds).coerceAtLeast(1L)
+        }
 
         recordedAnswers.add(
             QuestionAnswer(
@@ -377,6 +403,12 @@ class GameViewModel @Inject constructor(
             var quizId = -1L
 
             try {
+                val totalDuration = if (gameStartTimestamp > 0L) {
+                    ((System.currentTimeMillis() - gameStartTimestamp) / 1000L).coerceAtLeast(1L)
+                } else {
+                    _uiState.value.totalGameDurationSeconds
+                }
+
                 if (isMarathon) {
                     val previousBest = triviaRepository.getMarathonPersonalBest() ?: 0
                     if (_uiState.value.correctAnswersCount > previousBest) {
@@ -398,7 +430,7 @@ class GameViewModel @Inject constructor(
                         category = categoryName,
                         difficulty = Difficulty.fromApiValue(difficultyStr).id,
                         gameMode = gameModeId,
-                        durationSeconds = _uiState.value.totalGameDurationSeconds,
+                        durationSeconds = totalDuration,
                         totalQuestionsCount = recordedAnswers.size,
                         correctAnswersCount = _uiState.value.correctAnswersCount,
                         incorrectAnswersCount = _uiState.value.incorrectAnswersCount

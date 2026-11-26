@@ -1,5 +1,6 @@
 package com.fei.semestralnezadanie.frontend.components
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.fei.semestralnezadanie.R
@@ -33,7 +34,15 @@ object ShareHelper {
         }
 
         // Zobrazenie ponuky aplikácií na zdieľanie
-        val chooserIntent = Intent.createChooser(sendIntent, null)
-        context.startActivity(chooserIntent)
+        val chooserIntent = Intent.createChooser(sendIntent, null).apply {
+            if (context !is Activity) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        }
+        try {
+            context.startActivity(chooserIntent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

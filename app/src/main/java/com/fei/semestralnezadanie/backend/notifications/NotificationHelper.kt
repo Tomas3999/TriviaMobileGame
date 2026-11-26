@@ -86,7 +86,7 @@ object NotificationHelper {
         )
 
         val notification = NotificationCompat.Builder(context, Config.Notifications.CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.star_big_on)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))

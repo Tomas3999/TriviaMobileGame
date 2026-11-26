@@ -6,7 +6,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,6 +18,8 @@ import com.fei.semestralnezadanie.frontend.navigation.MainViewModel
 import com.fei.semestralnezadanie.frontend.navigation.Screen
 import dagger.hilt.android.AndroidEntryPoint
 
+import com.fei.semestralnezadanie.ui.theme.SemestralneZadanieTheme
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MaterialTheme {
+            SemestralneZadanieTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val profileState by mainViewModel.userProfile.collectAsState()
 
