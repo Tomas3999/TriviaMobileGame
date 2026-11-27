@@ -22,12 +22,12 @@
     <string name="lobby_difficulty_medium">Stredná</string>
     <string name="lobby_difficulty_hard">Ťažká</string>
     <string name="lobby_type_label">Typ otázok</string>
-    <string name="lobby_type_any">Akýkoľvek typ</string>
-    <string name="lobby_type_multiple">Výber zo 4 možností</string>
+    <string name="lobby_type_any">Akýkoľvek</string>
+    <string name="lobby_type_multiple">Viacero možností</string>
     <string name="lobby_type_boolean">Pravda / Nepravda</string>
     <string name="lobby_mode_label">Herný mód</string>
-    <string name="lobby_mode_classic">Klasický (10 otázok)</string>
-    <string name="lobby_mode_marathon">Maratón (Nekonečný režim)</string>
+    <string name="lobby_mode_classic">Klasický</string>
+    <string name="lobby_mode_marathon">Maratón</string>
     <string name="lobby_btn_start">Spustiť kvíz</string>
 
     <!-- Content descriptions -->

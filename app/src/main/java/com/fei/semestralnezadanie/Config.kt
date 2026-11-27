@@ -2,6 +2,12 @@ package com.fei.semestralnezadanie
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fei.semestralnezadanie.ui.theme.amber
+import com.fei.semestralnezadanie.ui.theme.blue
+import com.fei.semestralnezadanie.ui.theme.green
+import com.fei.semestralnezadanie.ui.theme.orange
+import com.fei.semestralnezadanie.ui.theme.purple
+import com.fei.semestralnezadanie.ui.theme.red
 
 object Config {
     object UI {
@@ -30,6 +36,15 @@ object Config {
         val AVATAR_BORDER_WIDTH = 2.dp
         val AVATAR_INNER_ICON_SIZE = 64.dp
         val PROGRESS_INDICATOR_SIZE = 24.dp
+
+        val DIFFICULTY_EASY = green
+        val DIFFICULTY_MEDIUM = orange
+        val DIFFICULTY_HARD = red
+        val DIFFICULTY_ANY = blue
+
+        val TYPE_ANY = blue
+        val TYPE_MULTIPLE = purple
+        val TYPE_TRUE_FALSE = green
     }
 
     object Api {

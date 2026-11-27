@@ -55,6 +55,7 @@ fun AppNavigation(
     val topBarTitleRes = when (currentRoute) {
         Screen.History.route -> R.string.history_title
         Screen.Challenges.route -> R.string.nav_challenges
+        Screen.Lobby.route -> R.string.lobby_title
         else -> R.string.app_name
     }
 

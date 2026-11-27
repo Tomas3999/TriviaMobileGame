@@ -21,12 +21,12 @@
     <string name="lobby_difficulty_medium">Medium</string>
     <string name="lobby_difficulty_hard">Hard</string>
     <string name="lobby_type_label">Question Type</string>
-    <string name="lobby_type_any">Any Type</string>
+    <string name="lobby_type_any">Any</string>
     <string name="lobby_type_multiple">Multiple Choice</string>
     <string name="lobby_type_boolean">True / False</string>
     <string name="lobby_mode_label">Game Mode</string>
-    <string name="lobby_mode_classic">Classic (10 Questions)</string>
-    <string name="lobby_mode_marathon">Marathon (Endless)</string>
+    <string name="lobby_mode_classic">Classic</string>
+    <string name="lobby_mode_marathon">Marathon</string>
     <string name="lobby_btn_start">Start Quiz</string>
 
     <!-- Content descriptions -->
